@@ -6,12 +6,11 @@ pub type PublicKey = [u8; PUBLIC_KEY_LENGTH];
 pub const SECRET_KEY_LENGTH: usize = 64;
 pub type SecretKey = [u8; SECRET_KEY_LENGTH];
 
-/// Formats the sum of two numbers as string.
 #[pyfunction]
 fn shared_secret(secret_key: SecretKey, their_public: PublicKey) -> PyResult<[u8; 32]> {
-    let comressed_ristreretto = CompressedRistretto::from_slice(their_public.as_ref())
+    let compressed_ristretto = CompressedRistretto::from_slice(their_public.as_ref())
         .map_err(|_| PyValueError::new_err("Invalid public key"))?;
-    let uncompressed_ristretto = comressed_ristreretto
+    let uncompressed_ristretto = compressed_ristretto
         .decompress()
         .ok_or_else(|| PyValueError::new_err("Invalid public key"))?;
 
